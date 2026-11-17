@@ -2,24 +2,22 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class DatabaseHelper {
-  // 1. Patrón Singleton: Instancia única privada
+  // Instancia única (Singleton)
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   factory DatabaseHelper() => _instance;
   DatabaseHelper._internal();
 
+  // Variable estática privada que faltaba y causaba el error
   static Database? _database;
 
-  // 2. Getter perezoso (Lazy getter) para obtener la base de datos
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDatabase();
     return _database!;
   }
 
-  // 3. Inicialización del archivo de base de datos en el dispositivo
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'pet_health.db');
-    
     return await openDatabase(
       path,
       version: 1,
@@ -27,7 +25,6 @@ class DatabaseHelper {
     );
   }
 
-  // 4. Creación de las tablas relacionales la primera vez que se instala la app
   Future<void> _onCreate(Database db, int version) async {
     // 1. Tabla de Mascotas
     await db.execute('''
@@ -35,20 +32,20 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         species TEXT NOT NULL,
-        breed TEXT,
-        is_quiltro INTEGER,
-        size TEXT,
+        breed TEXT NOT NULL,
+        is_quiltro INTEGER NOT NULL,
+        size TEXT NOT NULL,
         coat_length TEXT,
-        morph_emoji TEXT,
+        morph_emoji TEXT NOT NULL,
         weight REAL NOT NULL,
         age INTEGER NOT NULL,
-        activity_level TEXT,
-        body_condition TEXT,
-        created_at TEXT NOT NULL
+        activity_level TEXT NOT NULL,
+        body_condition TEXT NOT NULL,
+        createdAt TEXT NOT NULL
       )
     ''');
 
-    // 2. Tabla del Catálogo de Vacunas Chilenas
+    // 2. Tabla del Catálogo de Vacunas base
     await db.execute('''
       CREATE TABLE vaccines(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -58,7 +55,7 @@ class DatabaseHelper {
       )
     ''');
 
-    // 3. Tabla del Historial de Vacunación Aplicadas
+    // 3. Tabla de Vacunas Aplicadas a cada mascota
     await db.execute('''
       CREATE TABLE pet_vaccines(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -71,14 +68,10 @@ class DatabaseHelper {
       )
     ''');
 
-    // --- PRECARGA DE VACUNAS CHILENAS (SEED DATA) ---
-    // Vacunas para Perros
-    await db.insert('vaccines', {'name': 'Séxtuple (DHPPi+L)', 'species': 'Perro', 'validity_months': 12});
+    // Insertar datos iniciales de vacunas por defecto para Chile
+    await db.insert('vaccines', {'name': 'Óctuple / Séxtuple (Canina)', 'species': 'Perro', 'validity_months': 12});
     await db.insert('vaccines', {'name': 'Antirrábica', 'species': 'Ambos', 'validity_months': 12});
-    await db.insert('vaccines', {'name': 'Tos de las Perreras (Bordetella)', 'species': 'Perro', 'validity_months': 12});
-    await db.insert('vaccines', {'name': 'Coronavirus Canino', 'species': 'Perro', 'validity_months': 12});
-
-    // Vacunas para Gatos
-    await db.insert('vaccines', {'name': 'Triple Felina (FVRCP)', 'species': 'Gato', 'validity_months': 12});
-    await db.insert('vaccines', {'name': 'Leucemia Felina (FeLV)', 'species': 'Gato', 'validity_months': 12});
+    await db.insert('vaccines', {'name': 'Triple Felina', 'species': 'Gato', 'validity_months': 12});
+    await db.insert('vaccines', {'name': 'Leucemia Felina', 'species': 'Gato', 'validity_months': 12});
   }
+}
