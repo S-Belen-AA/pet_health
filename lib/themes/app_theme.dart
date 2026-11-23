@@ -9,8 +9,11 @@ class AppTheme {
     primaryColor: const Color(0xFFA3E4D7), // Verde claro amigable
     colorScheme: const ColorScheme.light(
       primary: Color(0xFFA3E4D7),
+      onPrimary: Color(0xFF1F2D3D),
       secondary: Color(0xFFFADBD8), // Rosa pastel
-      tertiary: Color(0xFFFCF3CF),  // Amarillo cálido
+      onSecondary: Color(0xFF2C3E50),
+      tertiary: Color(0xFFFCF3CF), // Amarillo cálido
+      onTertiary: Color(0xFF2C3E50),
       surface: Color(0xFFFFFFFF),
       onSurface: Color(0xFF2C3E50),
     ),
@@ -35,8 +38,11 @@ class AppTheme {
     primaryColor: const Color(0xFF48C9B0), // Verde menta oscuro adaptado
     colorScheme: const ColorScheme.dark(
       primary: Color(0xFF48C9B0),
+      onPrimary: Color(0xFF102A25),
       secondary: Color(0xFFD98880), // Rosa oscuro elegante
-      tertiary: Color(0xFFF1C40F),  // Amarillo neón suave
+      onSecondary: Color(0xFF121212),
+      tertiary: Color(0xFFF1C40F), // Amarillo neón suave
+      onTertiary: Color(0xFF121212),
       surface: Color(0xFF1E1E1E),
       onSurface: Color(0xFFECF0F1),
     ),

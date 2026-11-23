@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pet_health/providers/theme_provider.dart';
 import 'package:pet_health/providers/pet_provider.dart';
-import 'package:pet_health/providers/vaccine_provider.dart';
+import 'package:pet_health/providers/theme_provider.dart';
+import 'package:pet_health/screens/pets/pet_list_screen.dart';
 import 'package:pet_health/themes/app_theme.dart';
 import 'package:pet_health/widgets/glass_card.dart';
 import 'package:pet_health/screens/pets/pet_form_screen.dart';
@@ -16,7 +16,6 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => PetProvider()..loadPets()),
-        ChangeNotifierProvider(create: (_) => VaccineProvider()),
       ],
       child: const MyApp(),
     ),
@@ -36,7 +35,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeProvider.themeMode,
-      home: const PetHomeScreen(),
+      home: const PetListScreen(),
     );
   }
 }
