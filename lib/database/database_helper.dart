@@ -46,7 +46,7 @@ class DatabaseHelper {
         is_quiltro INTEGER NOT NULL DEFAULT 0,
         size TEXT,
         coat_length TEXT,
-        morph_emoji TEXT NOT NULL,
+        morph_emoji TEXT,
         weight REAL NOT NULL,
         age INTEGER NOT NULL,
         birth_date TEXT,

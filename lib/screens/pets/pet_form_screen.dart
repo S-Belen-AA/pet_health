@@ -5,7 +5,9 @@ import 'package:pet_health/providers/pet_provider.dart';
 import 'package:pet_health/widgets/glass_card.dart';
 
 class PetFormScreen extends StatefulWidget {
-  const PetFormScreen({super.key});
+  final PetModel? initialPet;
+
+  const PetFormScreen({super.key, this.initialPet});
 
   @override
   State<PetFormScreen> createState() => _PetFormScreenState();
