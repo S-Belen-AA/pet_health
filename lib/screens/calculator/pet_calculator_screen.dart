@@ -34,33 +34,61 @@ class _PetCalculatorScreenState extends State<PetCalculatorScreen> {
     }
   }
 
+  Widget _buildPetLeading(PetModel pet) {
+    final value = pet.morph_emoji;
+    if (value != null && value.startsWith('animalitos/')) {
+      return Image.asset(
+        value,
+        width: 26,
+        height: 26,
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => Text(
+          pet.species == 'Perro' ? '🐕' : '🐈',
+          style: const TextStyle(fontSize: 18),
+        ),
+      );
+    }
+
+    return Text(
+      value ?? (pet.species == 'Perro' ? '🐕' : '🐈'),
+      style: const TextStyle(fontSize: 18),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final petProvider = Provider.of<PetProvider>(context);
     final pets = petProvider.pets;
 
+    final PetModel? activeSelectedPet = _selectedPet != null
+        ? pets.firstWhere(
+            (p) => p.id == _selectedPet!.id && p.name == _selectedPet!.name,
+            orElse: () => pets.isNotEmpty ? pets.first : _selectedPet!,
+          )
+        : (pets.isNotEmpty ? pets.first : null);
+
     // Si hay una mascota seleccionada, calculamos sus porciones en tiempo real
     NutritionResult? result;
-    if (_selectedPet != null) {
+    if (activeSelectedPet != null) {
       // Creamos una copia temporal con los estados ajustados en la vista
       final tempPet = PetModel(
-        id: _selectedPet!.id,
-        name: _selectedPet!.name,
-        species: _selectedPet!.species,
-        breed: _selectedPet!.breed,
-        weight: _selectedPet!.weight,
-        age: _selectedPet!.age,
+        id: activeSelectedPet.id,
+        name: activeSelectedPet.name,
+        species: activeSelectedPet.species,
+        breed: activeSelectedPet.breed,
+        weight: activeSelectedPet.weight,
+        age: activeSelectedPet.age,
         activity_level: _activityLevel,
         body_condition: _bodyCondition,
-        createdAt: _selectedPet!.createdAt,
-        morph_emoji: _selectedPet!.morph_emoji,
+        createdAt: activeSelectedPet.createdAt,
+        morph_emoji: activeSelectedPet.morph_emoji,
       );
       result = NutritionCalculator.calculateFood(tempPet);
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Calculadora Nutricional 🍲📐'),
+        title: const Text('Calculadora Nutricional'),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -111,13 +139,25 @@ class _PetCalculatorScreenState extends State<PetCalculatorScreen> {
                           const Text('Seleccionar Mascota', style: TextStyle(fontWeight: FontWeight.bold)),
                           const SizedBox(height: 8),
                           DropdownButtonFormField<PetModel>(
-                            value: _selectedPet,
+                            value: activeSelectedPet,
                             isExpanded: true,
                             decoration: const InputDecoration(border: OutlineInputBorder()),
                             items: pets.map((pet) {
                               return DropdownMenuItem(
                                 value: pet,
-                                child: Text('${pet.morph_emoji ?? "🐾"} ${pet.name} (${pet.weight} kg)'),
+                                child: Row(
+                                  children: [
+                                    _buildPetLeading(pet),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        pet.name,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               );
                             }).toList(),
                             onChanged: (val) {
@@ -135,7 +175,7 @@ class _PetCalculatorScreenState extends State<PetCalculatorScreen> {
                     ),
 
                     // Ajustes de Actividad y Condición Corporal
-                    if (_selectedPet != null) ...[
+                    if (activeSelectedPet != null) ...[
                       GlassCard(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

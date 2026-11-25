@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pet_health/models/pet_model.dart';
 import 'package:pet_health/providers/pet_provider.dart';
+import 'package:pet_health/screens/calculator/pet_calculator_screen.dart';
 import 'package:pet_health/screens/pets/pet_detail_screen.dart';
 import 'package:pet_health/screens/pets/pet_form_screen.dart';
 import 'package:pet_health/widgets/glass_card.dart';
@@ -8,11 +10,58 @@ import 'package:pet_health/widgets/glass_card.dart';
 class PetListScreen extends StatelessWidget {
   const PetListScreen({super.key});
 
+  Widget _buildPetAvatar(PetModel pet) {
+    final value = pet.morph_emoji;
+    if (value != null && value.startsWith('animalitos/')) {
+      return SizedBox(
+        width: 42,
+        height: 42,
+        child: Image.asset(
+          value,
+          width: 42,
+          height: 42,
+          fit: BoxFit.contain,
+          errorBuilder: (_, __, ___) => Center(
+            child: Text(
+              pet.species == 'Perro' ? '🐕' : '🐈',
+              style: const TextStyle(fontSize: 28),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return SizedBox(
+      width: 42,
+      height: 42,
+      child: Center(
+        child: Text(
+          value ?? (pet.species == 'Perro' ? '🐕' : '🐈'),
+          style: const TextStyle(fontSize: 28),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis Mascotas 🐾'),
+        title: const Text('Integrantes'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.calculate_outlined),
+            tooltip: 'Calculadora nutricional',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const PetCalculatorScreen(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
@@ -80,10 +129,7 @@ class PetListScreen extends StatelessWidget {
                 child: GlassCard(
                   child: Row(
                     children: [
-                      Text(
-                        pet.morph_emoji ?? (pet.species == 'Perro' ? '🐕' : '🐈'),
-                        style: const TextStyle(fontSize: 34),
-                      ),
+                      _buildPetAvatar(pet),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
@@ -91,13 +137,24 @@ class PetListScreen extends StatelessWidget {
                           children: [
                             Text(
                               pet.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                             ),
-                            Text('${pet.species}${pet.breed != null ? ' • ${pet.breed}' : ''}'),
-                            Text('Edad: ${pet.formattedAge}$estText • ${pet.weight} kg'),
+                            Text(
+                              '${pet.species}${pet.breed != null ? ' • ${pet.breed}' : ''}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              'Edad: ${pet.formattedAge}$estText • ${pet.weight} kg',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ],
                         ),
                       ),
+                      const SizedBox(width: 4),
                       const Icon(Icons.chevron_right),
                     ],
                   ),

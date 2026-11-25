@@ -30,18 +30,19 @@ class _PetFormScreenState extends State<PetFormScreen> {
   bool _isSaving = false;
   String _size = 'Mediano';
   String _coatLength = 'Corto';
-  String _morphEmoji = '🐕';
+  String _morphEmoji = 'animalitos/perros/Chihuahua.png';
   final String _activityLevel = 'Moderado';
   final String _bodyCondition = 'Ideal';
 
-  // Razas habituales en hogares chilenos
+  // Razas habituales y reconocibles en hogares de Chile
   final List<String> _dogBreeds = [
     'Chihuahua',
     'Pastor Alemán',
     'Labrador Retriever',
     'Golden Retriever',
-    'Poodle',
+    'Poodle / Caniche',
     'Bulldog Francés',
+    'Bulldog Inglés',
     'Pug / Carlino',
     'Salchicha (Dachshund)',
     'Beagle',
@@ -53,11 +54,225 @@ class _PetFormScreenState extends State<PetFormScreen> {
     'Jack Russell Terrier',
     'Husky Siberiano',
     'Rottweiler',
-    'Quiltro / Mestizo',
+    'Pitbull / American bully',
+    'Pastor de Shetland',
+    'Akita Inu',
+    'Samoyedo',
+    'Dálmata',
+    'Shih Tzu',
+    'Maltés',
+    'Bichón Frisé',
+    'Galgo / Whippet',
   ];
 
-  final List<String> _catEmojis = ['🐈', '🐱', '🐈‍⬛', '🐅', '🦁', '😺'];
-  final List<String> _dogEmojis = ['🐕', '🐶', '🦮', '🐕‍🦺', '🦊'];
+  // Variantes por raza cuando existe más de un PNG en animalitos/perros/
+  final Map<String, List<String>> _breedVariants = const {
+    'Chihuahua': [
+      'animalitos/perros/Chihuahua.png',
+      'animalitos/perros/Chihuahua 2.png',
+      'animalitos/perros/Chihuahua 3.png',
+    ],
+    'Pastor Alemán': [
+      'animalitos/perros/Pastor Alemán.png',
+      'animalitos/perros/Pastor Alemán 2.png',
+    ],
+    'Labrador Retriever': [
+      'animalitos/perros/Labrador Retriever.png',
+      'animalitos/perros/Labrador Retriever 2.png',
+    ],
+    'Poodle / Caniche': [
+      'animalitos/perros/Poodle grande.png',
+      'animalitos/perros/Poodle grande 2.png',
+    ],
+    'Husky Siberiano': [
+      'animalitos/perros/Husky Siberiano.png',
+      'animalitos/perros/Husky Siberiano 2.png',
+      'animalitos/perros/Husky Siberiano 3.png',
+    ],
+    'Shih Tzu': [
+      'animalitos/perros/Shih Tzu.png',
+      'animalitos/perros/Shih Tzu 2.png',
+    ],
+  };
+
+  // PNGs numerados de perros mestizos en animalitos/perros/
+  final List<String> _quiltroAssets = const [
+    'animalitos/perros/2.png',
+    'animalitos/perros/3.png',
+    'animalitos/perros/5.png',
+    'animalitos/perros/6.png',
+    'animalitos/perros/7.png',
+    'animalitos/perros/8.png',
+    'animalitos/perros/9.png',
+    'animalitos/perros/10.png',
+    'animalitos/perros/11.png',
+    'animalitos/perros/12.png',
+    'animalitos/perros/13.png',
+    'animalitos/perros/14.png',
+  ];
+
+  // PNGs 1.png a 28.png de gatos en animalitos/gatos/
+  final List<String> _catAssets = List.generate(
+    28,
+    (index) => 'animalitos/gatos/${index + 1}.png',
+  );
+
+  List<String> _variantsForBreed(String breed) {
+    return _breedVariants[breed] ?? [_singleAssetForBreed(breed)];
+  }
+
+  String _singleAssetForBreed(String breed) {
+    switch (breed) {
+      case 'Chihuahua':
+        return 'animalitos/perros/Chihuahua.png';
+      case 'Pastor Alemán':
+        return 'animalitos/perros/Pastor Alemán.png';
+      case 'Labrador Retriever':
+        return 'animalitos/perros/Labrador Retriever.png';
+      case 'Golden Retriever':
+        return 'animalitos/perros/Golden Retriever.png';
+      case 'Poodle / Caniche':
+        return 'animalitos/perros/Poodle grande.png';
+      case 'Bulldog Francés':
+        return 'animalitos/perros/Bulldog Francés.png';
+      case 'Bulldog Inglés':
+        return 'animalitos/perros/Bulldog Inglés.png';
+      case 'Pug / Carlino':
+        return 'animalitos/perros/Pug.png';
+      case 'Salchicha (Dachshund)':
+        return 'animalitos/perros/Salchicha.png';
+      case 'Beagle':
+        return 'animalitos/perros/Beagle.png';
+      case 'Cocker Spaniel':
+        return 'animalitos/perros/Cocker Spaniel.png';
+      case 'Bóxer':
+        return 'animalitos/perros/Bóxer.png';
+      case 'Schnauzer':
+        return 'animalitos/perros/Schnauzer.png';
+      case 'Border Collie':
+        return 'animalitos/perros/Border Collie.png';
+      case 'Yorkshire Terrier':
+        return 'animalitos/perros/Yorkshire Terrier.png';
+      case 'Jack Russell Terrier':
+        return 'animalitos/perros/Jack Russell Terrier.png';
+      case 'Husky Siberiano':
+        return 'animalitos/perros/Husky Siberiano.png';
+      case 'Rottweiler':
+        return 'animalitos/perros/Rottweiler.png';
+      case 'Pitbull / American bully':
+        return 'animalitos/perros/Pitbull.png';
+      case 'Pastor de Shetland':
+        return 'animalitos/perros/Pastor de Shetland.png';
+      case 'Akita Inu':
+        return 'animalitos/perros/Akita Inu.png';
+      case 'Samoyedo':
+        return 'animalitos/perros/Samoyedo.png';
+      case 'Dálmata':
+        return 'animalitos/perros/Dálmata.png';
+      case 'Shih Tzu':
+        return 'animalitos/perros/Shih Tzu.png';
+      case 'Maltés':
+        return 'animalitos/perros/Maltés.png';
+      case 'Bichón Frisé':
+        return 'animalitos/perros/Bichón Frisé.png';
+      case 'Galgo / Whippet':
+        return 'animalitos/perros/Greyhound.png';
+      default:
+        return 'animalitos/perros/2.png';
+    }
+  }
+
+  Widget _buildPetAppearanceImage(String value, {required double size}) {
+    if (value.startsWith('animalitos/')) {
+      return Image.asset(
+        value,
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => Icon(Icons.pets, size: size * 0.8),
+      );
+    }
+    return Text(
+      value,
+      style: TextStyle(fontSize: size * 0.85),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  Future<void> _openAssetPicker({
+    required String title,
+    required List<String> assets,
+  }) async {
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 16,
+            bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 14),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 360),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 1.0,
+                  ),
+                  itemCount: assets.length,
+                  itemBuilder: (context, index) {
+                    final assetPath = assets[index];
+                    final isCurrent = _morphEmoji == assetPath;
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(14),
+                      onTap: () => Navigator.pop(sheetContext, assetPath),
+                      child: Container(
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: isCurrent
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.outlineVariant,
+                            width: isCurrent ? 2 : 1,
+                          ),
+                        ),
+                        child: _buildPetAppearanceImage(assetPath, size: 64),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (selected != null && mounted) {
+      setState(() {
+        _morphEmoji = selected;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -212,6 +427,140 @@ class _PetFormScreenState extends State<PetFormScreen> {
     }
   }
 
+  Widget _buildEmojiSection() {
+    if (_species == 'Perro' && !_isQuiltro) {
+      final variants = _variantsForBreed(_selectedBreed);
+      final hasMultipleVariants = variants.length > 1;
+
+      if (hasMultipleVariants) {
+        return GlassCard(
+          child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Apariencia',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                OutlinedButton(
+                  onPressed: () => _openAssetPicker(
+                    title: 'Selecciona apariencia',
+                    assets: variants,
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildPetAppearanceImage(_morphEmoji, size: 64),
+                      const SizedBox(height: 6),
+                      const Text('Seleccionar'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+
+      return GlassCard(
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'Apariencia',
+                style: TextStyle(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              _buildPetAppearanceImage(_morphEmoji, size: 76),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (_species == 'Perro' && _isQuiltro) {
+      return GlassCard(
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'Apariencia',
+                style: TextStyle(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton(
+                onPressed: () => _openAssetPicker(
+                  title: 'Selecciona apariencia',
+                  assets: _quiltroAssets,
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildPetAppearanceImage(_morphEmoji, size: 64),
+                    const SizedBox(height: 6),
+                    const Text('Seleccionar'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return GlassCard(
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text(
+              'Apariencia',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () => _openAssetPicker(
+                title: 'Selecciona apariencia',
+                assets: _catAssets,
+              ),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildPetAppearanceImage(_morphEmoji, size: 68),
+                  const SizedBox(height: 6),
+                  const Text('Seleccionar'),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final previewMonths = !_useManualAgeFallback && _birthDate != null
@@ -220,7 +569,7 @@ class _PetFormScreenState extends State<PetFormScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registrar Nueva Mascota 🐾'),
+        title: const Text('Rellenar Formulario'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -248,7 +597,13 @@ class _PetFormScreenState extends State<PetFormScreen> {
                         if (value == null) return;
                         setState(() {
                           _species = value;
-                          _morphEmoji = _species == 'Perro' ? '🐕' : '🐈';
+                          if (_species == 'Perro') {
+                            _morphEmoji = _isQuiltro
+                                ? _quiltroAssets.first
+                                : _singleAssetForBreed(_selectedBreed);
+                          } else {
+                            _morphEmoji = _catAssets.first;
+                          }
                         });
                       },
                     ),
@@ -288,12 +643,13 @@ class _PetFormScreenState extends State<PetFormScreen> {
                     ),
                     const SizedBox(height: 14),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Flexible(
+                        Flexible(
                           child: Text(
-                            'Fecha de nacimiento y edad',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            _useManualAgeFallback ? 'Edad' : 'Fecha de nacimiento',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                             softWrap: true,
                           ),
                         ),
@@ -313,16 +669,15 @@ class _PetFormScreenState extends State<PetFormScreen> {
                       ],
                     ),
                     if (!_useManualAgeFallback) ...[
-                      OutlinedButton.icon(
+                      OutlinedButton(
                         onPressed: _pickBirthDate,
-                        icon: const Icon(Icons.cake),
-                        label: Text(
-                          _birthDate == null
-                              ? 'Seleccionar fecha de nacimiento'
-                              : 'Nacimiento: ${_formatDateEs(_birthDate!)}',
-                        ),
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size.fromHeight(48),
+                        ),
+                        child: Text(
+                          _birthDate == null
+                              ? 'Seleccionar fecha'
+                              : _formatDateEs(_birthDate!),
                         ),
                       ),
                       if (previewMonths != null) ...[
@@ -386,14 +741,24 @@ class _PetFormScreenState extends State<PetFormScreen> {
                     children: [
                       const Text('Origen y Raza Canina', style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 12),
-                      SwitchListTile(
-                        title: const Text('¿Es Quiltro / Mestizo? 🇨🇱'),
-                        value: _isQuiltro,
-                        onChanged: (val) {
-                          setState(() {
-                            _isQuiltro = val;
-                          });
-                        },
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Mestizo'),
+                          Switch(
+                            value: _isQuiltro,
+                            onChanged: (val) {
+                              setState(() {
+                                _isQuiltro = val;
+                                if (!_isQuiltro) {
+                                  _morphEmoji = _singleAssetForBreed(_selectedBreed);
+                                } else {
+                                  _morphEmoji = _quiltroAssets.first;
+                                }
+                              });
+                            },
+                          ),
+                        ],
                       ),
                       if (!_isQuiltro) ...[
                         const SizedBox(height: 8),
@@ -404,11 +769,16 @@ class _PetFormScreenState extends State<PetFormScreen> {
                             border: OutlineInputBorder(),
                             labelText: 'Raza',
                           ),
-                          items: _dogBreeds.where((b) => b != 'Quiltro / Mestizo').map((breed) {
+                          items: _dogBreeds.map((breed) {
                             return DropdownMenuItem(value: breed, child: Text(breed));
                           }).toList(),
                           onChanged: (val) {
-                            if (val != null) setState(() => _selectedBreed = val);
+                            if (val != null) {
+                              setState(() {
+                                _selectedBreed = val;
+                                _morphEmoji = _singleAssetForBreed(val);
+                              });
+                            }
                           },
                         ),
                       ],
@@ -459,38 +829,7 @@ class _PetFormScreenState extends State<PetFormScreen> {
                   ),
                 ),
               ],
-              GlassCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Avatar / Emoji Morfológico', style: TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: (_species == 'Perro' ? _dogEmojis : _catEmojis).map((emoji) {
-                        final isSelected = _morphEmoji == emoji;
-                        return GestureDetector(
-                          onTap: () => setState(() => _morphEmoji = emoji),
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? Theme.of(context).primaryColor.withOpacity(0.5)
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: isSelected ? Colors.green : Colors.transparent,
-                                width: 2,
-                              ),
-                            ),
-                            child: Text(emoji, style: const TextStyle(fontSize: 30)),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
-              ),
+              _buildEmojiSection(),
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
@@ -508,7 +847,7 @@ class _PetFormScreenState extends State<PetFormScreen> {
                           child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
                         )
                       : const Text(
-                          'Guardar Mascota en SQLite 💾',
+                          'Guardar',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
